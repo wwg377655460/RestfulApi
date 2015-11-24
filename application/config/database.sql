@@ -5,6 +5,7 @@ use wecanstudio
 CREATE TABLE users(
   id INT PRIMARY KEY auto_increment,
   name VARCHAR(20) NOT NULL ,
+  description VARCHAR(200),
   sex VARCHAR(10) NOT NULL ,
   group_name INT NOT NULL ,
   phone VARCHAR(20) NOT NULL ,

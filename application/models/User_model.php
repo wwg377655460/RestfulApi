@@ -19,6 +19,7 @@ class User_model extends CI_Model
         $data = Array(
             'name' => $array->name,
             'sex' => $array->sex,
+            'description' => $array->description,
             'group_name' => $array->group_name,
             'imgurl' => $array->imgurl,
             'phone' => $array->phone,
@@ -28,6 +29,16 @@ class User_model extends CI_Model
 
         $this->db->insert('users', $data);
         return $this->db->insert_id();
+    }
+
+    public function lock(){
+        $sql_1=" LOCK TABLES users read ";
+        return $this->db->query($sql_1);
+    }
+
+    public function unlock(){
+        $sql_2=" UNLOCK TABLES ";
+        return $this->db->query($sql_2);
     }
 
     public function get($id){

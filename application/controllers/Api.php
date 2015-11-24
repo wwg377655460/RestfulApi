@@ -25,17 +25,11 @@ class Api extends CI_Controller{
     //注册
     public function insert(){
         $arr = HttpUtils::parseJson();
-        if(!HttpUtils::validation($arr, ["name", "sex", "group_name", "imgurl", "phone", "position", "code"])){
+        if(!HttpUtils::validation($arr, ["name", "sex", "description", "group_name", "imgurl", "phone", "position", "code"])){
             $this->varerror("参数匹配错误");
             return;
         }
 
-        //判断用户名是否重复
-        $user = $this->user_model->get_name($arr->name);
-        if($user != null){
-            $this->varerror("用户名重复");
-            return;
-        }
         //判断邀请码是否正确
         $code = $this->please_model->get($arr->code);
         if($code == null || $code["status"] == 0){
@@ -45,10 +39,21 @@ class Api extends CI_Controller{
             $code["status"] = 0;
         }
 
+        //判断用户名是否重复
+        $user = $this->user_model->get_name($arr->name);
+        $this->user_model->lock();
+        if($user != null){
+            $this->varerror("用户名重复");
+            return;
+        }
+
+
         $this->db->trans_start();
         $this->please_model->update($code);
         $this->user_model->insert($arr);
         $this->db->trans_complete();
+
+        $this->user_model->unlock();
         $this->success(null);
 
     }
